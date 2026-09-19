@@ -1,7 +1,3 @@
-# YuvaIntern_Task_02
-Week 2 Data Cleaning and Pre-Processing project using Python and Pandas on the Sample Superstore dataset.
-
-
 # YuvaIntern Task 02 – Data Cleaning and Pre-Processing
 
 ## Project Overview
@@ -18,6 +14,8 @@ The objective is to prepare reliable and analysis-ready data while documenting d
 
 The dataset contains sales transactions across different categories, regions, customer segments, and products.
 
+The original dataset contains **9,994 records and 21 columns**.
+
 Key variables include:
 
 - Sales
@@ -27,7 +25,7 @@ Key variables include:
 - Category
 - Sub-Category
 - Region
-- Customer Segment
+- Segment
 - Order Date
 - Ship Date
 
@@ -62,14 +60,16 @@ The following preprocessing steps were performed:
 - Date consistency validation
 - Logical range validation
 - Outlier detection using the IQR method
+- Feature engineering
+- Final data validation
 
 ---
 
 ## Missing Values
 
-The Week 1 dataset inspection identified no missing cells.
+The dataset was checked for missing values before and after preprocessing.
 
-Therefore, no imputation or deletion based on missing values was required.
+The analysis identified **0 missing cells**, so no imputation or deletion based on missing values was required.
 
 The Python workflow still performs missing-value validation after preprocessing.
 
@@ -79,17 +79,55 @@ The Python workflow still performs missing-value validation after preprocessing.
 
 Exact duplicate rows were checked.
 
-No exact duplicate records were identified in the Week 1 analysis.
+The analysis identified **0 exact duplicate rows**.
 
-The cleaning workflow also performs a defensive duplicate-removal step.
+The cleaning workflow also performs a defensive duplicate-removal step to ensure that duplicate records do not remain in the analysis-ready dataset.
+
+---
+
+## Data Consistency Checks
+
+The preprocessing workflow checks:
+
+- Date conversion
+- Order Date and Ship Date consistency
+- Numeric data types
+- Sales values
+- Quantity values
+- Discount range
+- Profit values
+- Text formatting
+
+Invalid date rows were checked and no invalid date records were identified.
 
 ---
 
 ## Outlier Detection
 
-Potential outliers were identified using the Interquartile Range (IQR) method.
+Potential outliers were identified using the **Interquartile Range (IQR)** method.
 
-Outliers were flagged rather than automatically deleted because extreme sales and profit values can represent legitimate business transactions.
+For the dataset:
+
+- Sales outlier flags: **1,167**
+- Profit outlier flags: **1,881**
+
+These values are treated as **potential outliers**, not automatically as errors.
+
+Outliers were flagged rather than deleted because extreme sales and profit values can represent legitimate business transactions.
+
+---
+
+## Negative Profit
+
+Negative-profit transactions were retained because they represent potentially meaningful business situations such as discounts, returns, or unprofitable sales.
+
+A `Loss Flag` feature was created to identify transactions where:
+
+```text
+Profit < 0
+```
+
+This allows future analysis of loss-making transactions without deleting potentially important records.
 
 ---
 
@@ -97,17 +135,66 @@ Outliers were flagged rather than automatically deleted because extreme sales an
 
 The following features were created:
 
-- Ship Duration
-- Profit Margin
-- Loss Flag
-- Order Year
-- Order Month
-- Order Quarter
-- Order Month-Year
-- Discount Bucket
-- Sales Tier
-- Sales Outlier Flag
-- Profit Outlier Flag
+- `Ship Duration`
+- `Profit Margin`
+- `Loss Flag`
+- `Order Year`
+- `Order Month`
+- `Order Quarter`
+- `Order Month-Year`
+- `Discount Bucket`
+- `Sales Tier`
+- `Sales Outlier Flag`
+- `Profit Outlier Flag`
+
+After preprocessing, the dataset contains **32 columns**.
+
+---
+
+## Data Transformation
+
+The preprocessing workflow includes:
+
+- Conversion of Order Date and Ship Date to datetime
+- Numeric type conversion
+- Text standardization
+- Date-based feature extraction
+- Profit margin calculation
+- Discount categorization
+- Sales categorization
+- Outlier flag creation
+
+For modeling-ready preprocessing, numerical and categorical variables can also be handled using Scikit-learn preprocessing pipelines.
+
+---
+
+## Final Dataset Validation
+
+After preprocessing, the final dataset was validated for:
+
+- Missing values
+- Duplicate rows
+- Valid dates
+- Sales range
+- Quantity range
+- Discount range
+- Profit values
+- Data types
+
+The final dataset contains:
+
+```text
+Rows: 9,994
+Columns: 32
+Missing values: 0
+Exact duplicates: 0
+```
+
+The cleaned dataset is saved as:
+
+```text
+Superstore_cleaned.csv
+```
 
 ---
 
@@ -130,12 +217,15 @@ YuvaIntern_Task_02/
 ├── README.md
 │
 ├── report/
+│   ├── README.md
 │   └── Week_2_Data_Cleaning_and_Preprocessing_Superstore.docx
 │
 ├── code/
+│   ├── README.md
 │   └── Week_2_Superstore_Cleaning.py
 │
 ├── visualizations/
+│   ├── README.md
 │   ├── 01_data_quality.png
 │   ├── 02_sales_profit_boxplot.png
 │   ├── 03_category_sales_profit.png
@@ -143,4 +233,108 @@ YuvaIntern_Task_02/
 │   └── 05_outlier_flags.png
 │
 └── data/
+    ├── README.md
     └── Superstore_cleaned.csv
+```
+
+---
+
+## How to Run
+
+### 1. Install Python
+
+Make sure Python is installed on your system.
+
+Check the installation:
+
+```bash
+python --version
+```
+
+### 2. Install Required Libraries
+
+```bash
+python -m pip install pandas numpy matplotlib scikit-learn
+```
+
+### 3. Place the Dataset
+
+Place the original dataset in the same directory as the Python script:
+
+```text
+Sample - Superstore.csv
+```
+
+### 4. Run the Python Script
+
+```bash
+python Week_2_Superstore_Cleaning.py
+```
+
+The script performs data cleaning, validation, transformation, outlier detection, feature engineering, and generates the cleaned dataset.
+
+---
+
+## Report
+
+The detailed **Data Cleaning and Pre-Processing Report** is available in the `report` folder.
+
+The report documents:
+
+- Dataset inspection
+- Missing-value analysis
+- Duplicate analysis
+- Data consistency checks
+- Outlier detection
+- Cleaning decisions
+- Data transformations
+- Feature engineering
+- Validation
+- Reproducibility workflow
+
+---
+
+## Visualizations
+
+The `visualizations` folder contains project charts related to:
+
+- Data quality
+- Sales and profit distributions
+- Category-level analysis
+- Regional analysis
+- Outlier detection
+
+---
+
+## Key Results
+
+The preprocessing workflow produced an analysis-ready dataset with:
+
+| Metric | Result |
+|---|---:|
+| Original rows | 9,994 |
+| Original columns | 21 |
+| Final columns | 32 |
+| Missing cells | 0 |
+| Exact duplicate rows | 0 |
+| Invalid date rows | 0 |
+| Sales outlier flags | 1,167 |
+| Profit outlier flags | 1,881 |
+
+---
+
+## Conclusion
+
+This project demonstrates a reproducible data cleaning and preprocessing workflow for the Sample Superstore dataset.
+
+The workflow focuses on data quality validation, transparent preprocessing decisions, outlier analysis, transformation, and feature engineering while preserving important business information.
+
+The resulting `Superstore_cleaned.csv` dataset is ready for further exploratory analysis, visualization, and modeling.
+
+---
+
+## Author
+
+**Aryan Verma**
+
+Data Cleaning and Pre-Processing using Python.
